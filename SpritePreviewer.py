@@ -1,5 +1,4 @@
 import math
-
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import *
@@ -24,9 +23,8 @@ class SpritePreview(QMainWindow):
         self.num_frames = 21
         self.frames = load_sprite('spriteImages',self.num_frames)
 
-        # Add any other instance variables needed to track information as the program
-        # runs here
-
+        # Add any other instance variables needed to track information as the program runs here
+        self.frame_label = QLabel()
         # Make the GUI in the setupUI method
         self.setupUI()
 
@@ -37,8 +35,40 @@ class SpritePreview(QMainWindow):
 
         # Add a lot of code here to make layouts, more QFrame or QWidgets, and
         # the other components of the program.
-        # Create needed connections between the UI components and slot methods
-        # you define in this class.
+        # Create needed connections between the UI components and slot methods you define in this class.
+        pixmap = self.frames[0]
+
+        self.frame_label.setPixmap(pixmap)
+
+        application_layout = QVBoxLayout()  # put label in a layout
+
+        animation_frame = QFrame()
+        animation_layout = QHBoxLayout()
+        animation_frame.setLayout(animation_layout)
+
+        application_layout.addWidget(animation_frame)
+
+        frame.setLayout(application_layout)
+
+        animation_layout.addWidget(self.frame_label)
+
+        slider = QSlider()
+        slider.setRange(1, 100)
+        slider.setValue(1)
+        # slider.valueChanged.connect(self.resize_trigger)
+        animation_layout.addWidget(slider)
+
+        text_frame = QFrame()
+        text_layout = QVBoxLayout()
+        text_frame.setLayout(text_layout)
+
+        fps_label = QLabel("Frames per second")
+        start_button = QPushButton("Start")
+
+        text_layout.addWidget(fps_label)
+        text_layout.addWidget(start_button)
+
+        application_layout.addWidget(text_frame)
 
         self.setCentralWidget(frame)
 
