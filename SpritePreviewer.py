@@ -1,3 +1,5 @@
+#https://github.com/SP8-E/A8-Sprite
+
 import math
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
@@ -25,6 +27,8 @@ class SpritePreview(QMainWindow):
 
         # Add any other instance variables needed to track information as the program runs here
         self.frame_label = QLabel()
+        self.fps = 1
+        self.fps_label = QLabel(str(self.fps))
         # Make the GUI in the setupUI method
         self.setupUI()
 
@@ -36,6 +40,16 @@ class SpritePreview(QMainWindow):
         # Add a lot of code here to make layouts, more QFrame or QWidgets, and
         # the other components of the program.
         # Create needed connections between the UI components and slot methods you define in this class.
+        menubar = self.menuBar()
+        menubar.setNativeMenuBar(False)
+        file_menu = menubar.addMenu('&File')
+        pause_action = QAction('&Pause', self)
+        pause_action.triggered.connect(self.pause)
+        file_menu.addAction(pause_action)
+        exit_action = QAction('&Exit', self)
+        exit_action.triggered.connect(self.quit_program)
+        file_menu.addAction(exit_action)
+
         pixmap = self.frames[0]
 
         self.frame_label.setPixmap(pixmap)
@@ -55,17 +69,27 @@ class SpritePreview(QMainWindow):
         slider = QSlider()
         slider.setRange(1, 100)
         slider.setValue(1)
-        # slider.valueChanged.connect(self.resize_trigger)
+        slider.setTickPosition(QSlider.TickPosition.TicksBothSides)
+        slider.setTickInterval(20)
+        slider.valueChanged.connect(self.update_fps)
         animation_layout.addWidget(slider)
 
         text_frame = QFrame()
         text_layout = QVBoxLayout()
         text_frame.setLayout(text_layout)
 
-        fps_label = QLabel("Frames per second")
+        fps_frame = QFrame()
+        fps_layout = QHBoxLayout()
+        fps_frame.setLayout(fps_layout)
+
+        frames_label = QLabel("Frames per second")
+
+        fps_layout.addWidget(frames_label)
+        fps_layout.addWidget(self.fps_label)
+
         start_button = QPushButton("Start")
 
-        text_layout.addWidget(fps_label)
+        text_layout.addWidget(fps_frame)
         text_layout.addWidget(start_button)
 
         application_layout.addWidget(text_frame)
@@ -74,7 +98,16 @@ class SpritePreview(QMainWindow):
 
 
     # You will need methods in the class to act as slots to connect to signals
+    def quit_program(self):
+        self.close()
 
+    def pause(self):
+        pass
+
+    def update_fps(self, value):
+        self.fps = value
+        self.fps_label.setText(str(value))
+        pass
 
 def main():
     app = QApplication([])
